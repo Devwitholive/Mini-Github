@@ -4,12 +4,15 @@ require("dotenv").config();
 
 const connectDB = require("./config/database");
 
+const respositoryRoutes = require("./routes/repositoryRoutes");
+
 const app = express();
 
 connectDB();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/repositories", respositoryRoutes);
 
 app.get("/", (req, res) => {
   res.json({
