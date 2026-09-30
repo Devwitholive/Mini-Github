@@ -1,4 +1,4 @@
-const Repository = required("../models/Repository");
+const Repository = require("../models/Repository");
 
 //create repository
 const createRepository = async (req, res) => {
@@ -38,9 +38,9 @@ const getRepositories = async (req, res) => {
 };
 
 // Get single repository
-const getRepository = async (req, res) =>{
-  try{
-    const respository = await repository.findById(req. params.id)
+const getRepository = async (req, res) => {
+  try {
+    const respository = await Repository.findById(req. params.id)
     .populate ("owner", "name email");
 
     if (!respository) {
@@ -59,7 +59,7 @@ const getRepository = async (req, res) =>{
 };
 
 // Update repository
-const UpdateRepository = async (req, res) => {
+const updateRepository = async (req, res) => {
   try {
     const { name, description, visibility } =req.boby;
 
@@ -75,9 +75,9 @@ const UpdateRepository = async (req, res) => {
     repository.description = description ?? repository.description;
     repository.visibility = visibility ?? repository. visibility;
 
-    const UpdatedRepository = await repository.save();
+    const updatedRepository = await repository.save();
 
-    res.status(200).json(UpdatedRepository);
+    res.status(200).json(updatedRepository);
  } catch (error) {
    res.status(500).json({
     message: "Failed to update repository",
@@ -88,7 +88,7 @@ const UpdateRepository = async (req, res) => {
 
 //delete repository
 const deleteRepository = async (req, res) => {
-  try{
+  try {
     const repository = await Repository.findById(req.params.id);
 
     if (!repository) {
@@ -109,11 +109,11 @@ const deleteRepository = async (req, res) => {
   }
 };
 
-module.export = {
+module.exports = {
   createRepository,
   getRepositories,
   getRepository,
-  UpdateRepository,
+  updateRepository,
   deleteRepository,
 };
 
