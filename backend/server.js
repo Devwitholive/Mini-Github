@@ -4,9 +4,10 @@ require("dotenv").config();
 
 const connectDB = require("./config/database");
 
-const respositoryRoutes = require("./routes/repositoryRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const respositoryRoutes = require("./routes/repositoryRoutes");
+const commitRoutes = require("./routes/commitRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/repositories", respositoryRoutes);
+app.use("/api", commitRoutes);
 
 app.get("/", (req, res) => {
   res.json({
