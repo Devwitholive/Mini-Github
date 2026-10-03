@@ -5,6 +5,14 @@ const createRepository = async (req, res) => {
   try {
     const { name, description, visibility } = req.body;
 
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Repository name is required",
+        data: null,
+      });
+    }
+
     const repository = await Repository.create({
       name,
       description,
@@ -12,11 +20,16 @@ const createRepository = async (req, res) => {
       owner: req.user._id,
     });
 
-    res.status(201).json(repository);
+    res.status(201).json({
+      success: true,
+      message: "Repository created successfully",
+      data: repository,
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to create repository",
-      error: error.message,
+      data: null,
     });
   }
 };
@@ -25,14 +38,19 @@ const createRepository = async (req, res) => {
 const getRepositories = async (req, res) => {
   try {
     const repositories = await Repository.find()
-      .populate("owner", "name email")
+      .populate("owner", "username email")
       .sort({ createdAt: -1 });
 
-    res.status(200).json(repositories);
+    res.status(200).json({
+      success: true,
+      message: "Repositories fetched successfully",
+      data: repositories,
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to fetch repositories",
-      error: error.message,
+      data: null,
     });
   }
 };
@@ -42,20 +60,27 @@ const getRepository = async (req, res) => {
   try {
     const repository = await Repository.findById(req.params.id).populate(
       "owner",
-      "name email"
+      "username email"
     );
 
     if (!repository) {
       return res.status(404).json({
+        success: false,
         message: "Repository not found",
+        data: null,
       });
     }
 
-    res.status(200).json(repository);
+    res.status(200).json({
+      success: true,
+      message: "Repository fetched successfully",
+      data: repository,
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to fetch repository",
-      error: error.message,
+      data: null,
     });
   }
 };
@@ -69,7 +94,18 @@ const updateRepository = async (req, res) => {
 
     if (!repository) {
       return res.status(404).json({
+        success: false,
         message: "Repository not found",
+        data: null,
+      });
+    }
+
+    // Check if the logged-in user owns the repository
+    if (repository.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to update this repository",
+        data: null,
       });
     }
 
@@ -79,11 +115,16 @@ const updateRepository = async (req, res) => {
 
     const updatedRepository = await repository.save();
 
-    res.status(200).json(updatedRepository);
+    res.status(200).json({
+      success: true,
+      message: "Repository updated successfully",
+      data: updatedRepository,
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to update repository",
-      error: error.message,
+      data: null,
     });
   }
 };
@@ -95,19 +136,33 @@ const deleteRepository = async (req, res) => {
 
     if (!repository) {
       return res.status(404).json({
+        success: false,
         message: "Repository not found",
+        data: null,
+      });
+    }
+
+    // Check if the logged-in user owns the repository
+    if (repository.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to delete this repository",
+        data: null,
       });
     }
 
     await repository.deleteOne();
 
     res.status(200).json({
+      success: true,
       message: "Repository deleted successfully",
+      data: null,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to delete repository",
-      error: error.message,
+      data: null,
     });
   }
 };

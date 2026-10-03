@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const repositorySchema = new mongoose.Schema(
   {
-    name:{
+    name: {
       type: String,
       required: true,
       trim: true,
@@ -10,24 +10,32 @@ const repositorySchema = new mongoose.Schema(
 
     description: {
       type: String,
-      defauit: "",
+      default: "",
       trim: true,
     },
 
-    visibility:{
+    visibility: {
       type: String,
       enum: ["public", "private"],
-      defauit:"public",
+      default: "public",
     },
 
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
     },
+
+    collaborators: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose. model("Repository", repositorySchema);
+
+module.exports = mongoose.model("Repository", repositorySchema);

@@ -7,7 +7,9 @@ const protect = async (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "Not authorized. No token provided.",
+        success: false,
+        message: "Unauthorized request",
+        data: null,
       });
     }
 
@@ -24,7 +26,9 @@ const protect = async (req, res, next) => {
 
     if (!user) {
       return res.status(401).json({
+        success: false,
         message: "User not found",
+        data: null,
       });
     }
 
@@ -33,7 +37,9 @@ const protect = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "Not authorized. Invalid token.",
+      success: false,
+      message: "Invalid or expired token",
+      data: null,
     });
   }
 };

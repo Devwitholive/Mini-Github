@@ -1,15 +1,18 @@
 const Commit = require("../models/Commit");
 const Repository = require("../models/Repository");
 
-//Create a commit
+// Create a commit
 const createCommit = async (req, res) => {
   try {
     const { message } = req.body;
     const { repositoryId } = req.params;
 
+    // Validate required field
     if (!message) {
       return res.status(400).json({
+        success: false,
         message: "Commit message is required",
+        data: null,
       });
     }
 
@@ -17,7 +20,9 @@ const createCommit = async (req, res) => {
 
     if (!repository) {
       return res.status(404).json({
+        success: false,
         message: "Repository not found",
+        data: null,
       });
     }
 
@@ -28,18 +33,20 @@ const createCommit = async (req, res) => {
     });
 
     res.status(201).json({
+      success: true,
       message: "Commit created successfully",
-      commit,
+      data: commit,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to create commit",
-      error: error.message,
+      data: null,
     });
   }
 };
 
-//View all commits
+// View all commits
 const getCommits = async (req, res) => {
   try {
     const { repositoryId } = req.params;
@@ -48,7 +55,9 @@ const getCommits = async (req, res) => {
 
     if (!repository) {
       return res.status(404).json({
+        success: false,
         message: "Repository not found",
+        data: null,
       });
     }
 
@@ -59,17 +68,20 @@ const getCommits = async (req, res) => {
       .sort({ createdAt: -1 });
 
     res.status(200).json({
-      commits,
+      success: true,
+      message: "Commits fetched successfully",
+      data: commits,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to fetch commits",
-      error: error.message,
+      data: null,
     });
   }
 };
 
-//View one individual commit
+// View one individual commit
 const getCommit = async (req, res) => {
   try {
     const commit = await Commit.findById(req.params.id)
@@ -78,17 +90,22 @@ const getCommit = async (req, res) => {
 
     if (!commit) {
       return res.status(404).json({
+        success: false,
         message: "Commit not found",
+        data: null,
       });
     }
 
     res.status(200).json({
-      commit,
+      success: true,
+      message: "Commit fetched successfully",
+      data: commit,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to fetch commit",
-      error: error.message,
+      data: null,
     });
   }
 };
