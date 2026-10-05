@@ -14,7 +14,7 @@ const issueRoutes = require("./routes/issueRoutes");
 const collaboratorRoutes = require("./routes/collaboratorRoutes");
 
 const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./Swagger");
+const swaggerSpec = require("./swagger");
 
 const app = express();
 
